@@ -8,6 +8,8 @@ const methodOverride = require("method-override");
 const morgan = require("morgan");
 const session = require('express-session');
 
+const isSignedIn = require('./middleware/is-signed-in.js');
+const passUserToView = require('./middleware/pass-user-to-view.js');
 
 const authController = require("./controllers/auth.js");
 // Set the port from environment variable or default to 3000
@@ -33,6 +35,7 @@ app.use(session({
     saveUninitialized: true,
 }));
 
+app.use(passUserToView); //pass that user info to an EJS template
 
 
 app.get("/", (req, res) => {
@@ -42,6 +45,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authController);
+app.use(isSignedIn); //we are setting this one up after the person Can sign in so that other routes can be protected
 
 
 
