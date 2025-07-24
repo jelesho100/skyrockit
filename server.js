@@ -40,9 +40,13 @@ app.use(session({
 app.use(passUserToView); //pass that user info to an EJS template
 
 app.get("/", (req, res) => {
-    res.render("index.ejs", {
-        user: req.session.user,
-    });
+    if (req.session.user) {
+        // Redirect signed-in users to their applications index
+        res.redirect(`/users/${req.session.user._id}/applications`);
+    } else {
+        // Show the homepage for users who are not signed in
+        res.render('index.ejs');
+    }
 });
 
 app.use("/auth", authController);
